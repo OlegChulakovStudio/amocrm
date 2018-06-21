@@ -19,6 +19,8 @@ class LeadEntity extends BaseEntity
 
     /**
      * Возвращает список сделок
+     *
+     * @param array $params дополнительные параметры запроса
      * @return mixed
      */
     public function items($params = [])

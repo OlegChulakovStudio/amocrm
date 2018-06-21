@@ -19,11 +19,15 @@ class AccountEntity extends BaseEntity
 
     /**
      * Возвращает информацию об аккаунте
+     *
      * @see https://www.amocrm.ru/developers/content/api/account
+     * @param array $params дополнительные параметры запроса
      * @return mixed
      */
-    public function info()
+    public function info($params = [])
     {
-        return $this->client->get(self::ACTION_NAME, $this->auth->getCredentials());
+        $params = array_merge($this->auth->getCredentials(), $params);
+
+        return $this->client->get(self::ACTION_NAME, $params);
     }
 }
