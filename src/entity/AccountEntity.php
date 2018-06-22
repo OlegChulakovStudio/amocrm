@@ -141,4 +141,21 @@ class AccountEntity extends BaseEntity
 
         return [];
     }
+
+    /**
+     * Вернёт информацию по всем дополнительным полям в аккаунте
+     * @return array
+     */
+    public function customFields()
+    {
+        $account = $this->info([
+            'with' => 'custom_fields'
+        ]);
+
+        if (!empty($account['_embedded']['custom_fields'])) {
+            return $account['_embedded']['custom_fields'];
+        }
+
+        return [];
+    }
 }
