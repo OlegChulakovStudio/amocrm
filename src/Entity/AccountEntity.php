@@ -158,4 +158,64 @@ class AccountEntity extends BaseEntity
 
         return [];
     }
+
+    /**
+     * Вернет дополнительные поля контактов
+     * @return array
+     */
+    public function customContactsFields()
+    {
+        $allFields = $this->customFields();
+
+        if (!empty($allFields['contacts'])) {
+            return $allFields['contacts'];
+        }
+
+        return [];
+    }
+
+    /**
+     * Вернет дополнительные поля сделок
+     * @return array
+     */
+    public function customLeadsFields()
+    {
+        $allFields = $this->customFields();
+
+        if (!empty($allFields['leads'])) {
+            return $allFields['leads'];
+        }
+
+        return [];
+    }
+
+    /**
+     * Вернет дополнительные поля компаний
+     * @return array
+     */
+    public function customCompaniesFields()
+    {
+        $allFields = $this->customFields();
+
+        if (!empty($allFields['companies'])) {
+            return $allFields['companies'];
+        }
+
+        return [];
+    }
+
+    /**
+     * Вернет дополнительные поля покупателей
+     * @return array
+     */
+    public function customCustomersFields()
+    {
+        $allFields = $this->customFields();
+
+        if (!empty($allFields['customers'])) {
+            return $allFields['customers'];
+        }
+
+        return [];
+    }
 }
