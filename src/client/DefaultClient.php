@@ -52,18 +52,19 @@ class DefaultClient implements ClientInterface
     {
         return \GuzzleHttp\json_decode($this->getGuzzle()->post($this->getApiUrl($action, $queryParams), [
             'json' => $data
-        ]), true);
+        ])->getBody(), true);
     }
 
     /**
      * Производит GET-запрос к сервису
-     * @param $action
+     *
+     * @param string $action
      * @param array $queryParams
      * @return mixed
      */
     public function get($action, $queryParams = [])
     {
-        return \GuzzleHttp\json_decode($this->getGuzzle()->get($this->getApiUrl($action, $queryParams)), true);
+        return \GuzzleHttp\json_decode($this->getGuzzle()->get($this->getApiUrl($action, $queryParams))->getBody(), true);
     }
 
     /**
