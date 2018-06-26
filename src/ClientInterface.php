@@ -32,4 +32,10 @@ interface ClientInterface
      * @return mixed
      */
     public function get($action, $queryParams = []);
+
+    /**
+     * Добавляет дополнительные заголовки к текущему запросу.
+     * @param array $headers массив ключи которого - название заголовков, а значения - значения заголовков
+     */
+    public function addRequestHeaders(array $headers);
 }

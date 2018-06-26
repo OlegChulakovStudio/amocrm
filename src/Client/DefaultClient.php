@@ -12,6 +12,9 @@ namespace Chulakov\AmoCRM\Client;
 use Chulakov\AmoCRM\ClientInterface;
 use GuzzleHttp\Client as GuzzleClient;
 
+/**
+ * Реализация абстракции HTTP-клиента на основе Guzzle
+ */
 class DefaultClient implements ClientInterface
 {
     /**
@@ -24,17 +27,10 @@ class DefaultClient implements ClientInterface
      */
     protected $urlTemplate = 'https://{subdomain}.amocrm.ru/api/v2/';
 
-    protected $currentAction;
-
-    protected $currentQueryParams;
-
-    protected $currentForm;
-
     /**
-     * @var \Psr\Http\Message\ResponseInterface
+     * @var array массив дополнительных заголовком для текущего выполняемого запроса.
      */
-    protected $currentRequestResult;
-
+    protected $additionalHeaders = [];
 
     /**
      * @param $subdomain
@@ -54,14 +50,9 @@ class DefaultClient implements ClientInterface
      */
     public function post($action, $queryParams = [], $data = [])
     {
-        $this->currentAction = $action;
-        $this->currentQueryParams = $queryParams;
-
-        $this->currentRequestResult = $this->getGuzzle()->post($this->getApiUrl(), [
+        return \GuzzleHttp\json_decode($this->getGuzzle()->post($this->getApiUrl($action, $queryParams), [
             'json' => $data
-        ]);
-
-        return $this->result();
+        ]), true);
     }
 
     /**
@@ -72,25 +63,30 @@ class DefaultClient implements ClientInterface
      */
     public function get($action, $queryParams = [])
     {
-        $this->currentAction = $action;
-        $this->currentQueryParams = $queryParams;
-
-        $this->currentRequestResult = $this->getGuzzle()->get($this->getApiUrl());
-
-        return $this->result();
+        return \GuzzleHttp\json_decode($this->getGuzzle()->get($this->getApiUrl($action, $queryParams)), true);
     }
 
     /**
-     *
+     * {@inheritdoc}
+     */
+    public function addRequestHeaders(array $headers)
+    {
+        $this->additionalHeaders = $headers;
+    }
+
+    /**
+     * Возвращает подготовленный Guzzle-клиент для отправки HTTP-запроса
      * @return GuzzleClient
      */
     protected function getGuzzle()
     {
+        $headers = array_merge([
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json'
+        ], $this->additionalHeaders);
+
         return new GuzzleClient([
-            'headers' => [
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json'
-            ],
+            'headers' => $headers,
             'verify' => false
         ]);
     }
@@ -100,25 +96,16 @@ class DefaultClient implements ClientInterface
      *
      * @return string
      */
-    protected function getApiUrl()
+    protected function getApiUrl($action, $queryParams)
     {
         $baseUrl = strtr($this->urlTemplate, [
             '{subdomain}' => $this->subdomain
-        ]) . $this->currentAction;
+        ]) . $action;
 
-        if (!empty($this->currentQueryParams)) {
-            return  $baseUrl . '?' . http_build_query($this->currentQueryParams);
+        if (!empty($queryParams)) {
+            return  $baseUrl . '?' . http_build_query($queryParams);
         } else {
             return $baseUrl;
         }
-    }
-
-    /**
-     * Возвращает результирующий массив
-     * @return array
-     */
-    protected function result()
-    {
-        return \GuzzleHttp\json_decode($this->currentRequestResult->getBody(), true);
     }
 }
