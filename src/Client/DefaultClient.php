@@ -86,6 +86,9 @@ class DefaultClient implements ClientInterface
             'Accept' => 'application/json'
         ], $this->additionalHeaders);
 
+        // Сбрасываем доп. заголовки для последующих запросов
+        $this->additionalHeaders = [];
+
         return new GuzzleClient([
             'headers' => $headers,
             'verify' => false
