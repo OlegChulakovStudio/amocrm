@@ -60,12 +60,19 @@ class AccountEntity extends BaseEntity
         $statuses = [];
 
         foreach ($this->pipelines() as $pipeline) {
+
+            // Докидываем идентификатор воронки продаж в статусы
+            $map = function ($status) use ($pipeline) {
+                $status['pipeline_id'] = $pipeline['id'];
+                return $status;
+            };
+
             if ($forMainOnly) {
                 if ($pipeline['is_main'] == 1) {
-                    return $pipeline['statuses'];
+                    return array_map($map, $pipeline['statuses']);
                 }
             } else {
-                $statuses = array_merge($statuses, $pipeline['statuses']);
+                $statuses = array_merge($statuses, array_map($map, $pipeline['statuses']));
             }
         }
 
