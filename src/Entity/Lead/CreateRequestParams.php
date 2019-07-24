@@ -8,12 +8,12 @@
 
 namespace Chulakov\AmoCRM\Entity\Lead;
 
-
 use Chulakov\AmoCRM\Entity\AbstractOperationRequestParams;
 
 /**
  * Параметры, необходимые для добавления новой сделки
  * @package Chulakov\AmoCRM\Entity\Lead
+ * @see https://www.amocrm.ru/developers/content/api/leads
  */
 class CreateRequestParams extends AbstractOperationRequestParams
 {
