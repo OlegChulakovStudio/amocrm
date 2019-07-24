@@ -10,6 +10,7 @@ namespace Chulakov\AmoCRM;
 
 use Chulakov\AmoCRM\Entity\AbstractQueryRequestParams;
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Psr7\Response;
 
 /**
  * Реализация Http-клиента на основе библиотеки Guzzle для взаимодействия с RESTful API AmoCRM
@@ -26,6 +27,11 @@ class HttpClient implements HttpClientInterface
      * @var string шаблон ссылки
      */
     protected $urlTemplate = 'https://{subdomain}.amocrm.ru/api/v2/';
+
+    /**
+     * @var GuzzleClient инстанс текущего Guzzle-клиента
+     */
+    protected $guzzle;
 
     /**
      * @var AbstractRequestParams параметры авторизации по HTTP
@@ -50,26 +56,35 @@ class HttpClient implements HttpClientInterface
     }
 
     /**
-     * @param string $action имя действия
-     * @param AbstractRequestParams $params параметры запроса
-     * @return mixed
+     * @inheritdoc
      */
-    public function get(string $action, AbstractQueryRequestParams $params)
+    public function get(string $action, AbstractQueryRequestParams $params, array $headers = []): array
     {
-        return \GuzzleHttp\json_decode($this->getGuzzleClient()->get($this->getApiUrl($action, $params))->getBody(), true);
+        $response = $this->getGuzzleClient()
+            ->get(
+                $this->getApiUrl($action, $params),
+                [
+                    'headers' => $this->prepareRequestHeaders($headers)
+                ]
+            );
+
+        return $this->decodeResponse($response);
     }
 
     /**
-     * @param string $action имя действия
-     * @param \Chulakov\AmoCRM\AbstractRequestParams $params параметры запроса
-     * @param array|\Chulakov\AmoCRM\AbstractRequestParams|AbstractRequestParams[] $data данные сущности для сохранения
-     * @return mixed
+     * @inheritdoc
      */
-    public function post(string $action, AbstractQueryRequestParams $params, $data)
+    public function post(string $action, AbstractQueryRequestParams $params, $data, array $headers = []): array
     {
-        return \GuzzleHttp\json_decode($this->getGuzzleClient()->post($this->getApiUrl($action, $params), [
-            'json' => $data
-        ])->getBody(), true);
+        $response = $this->getGuzzleClient()
+            ->post(
+                $this->getApiUrl($action, $params), [
+                    'json' => $data,
+                    'headers' => $this->prepareRequestHeaders($headers)
+                ]
+            );
+
+        return $this->decodeResponse($response);
     }
 
     /**
@@ -78,9 +93,13 @@ class HttpClient implements HttpClientInterface
      */
     protected function getGuzzleClient()
     {
-        return new GuzzleClient([
-            'verify' => false
-        ]);
+        if (is_null($this->guzzle)) {
+            $this->guzzle = new GuzzleClient([
+                'verify' => false
+            ]);
+        }
+
+        return $this->guzzle;
     }
 
     /**
@@ -102,5 +121,25 @@ class HttpClient implements HttpClientInterface
         }
 
         return $baseUrl;
+    }
+
+    /**
+     * Сливает умолчательные заголовки запроса с пользовательскими и возвращает результат
+     * @param array $customHeaders
+     * @return array
+     */
+    protected function prepareRequestHeaders(array $customHeaders = [])
+    {
+        return array_merge($this->defaultHeaders, $customHeaders);
+    }
+
+    /**
+     * Декодирует тело ответа из json-строки в ассоциативный массив
+     * @param Response $response
+     * @return mixed
+     */
+    protected function decodeResponse(Response $response)
+    {
+        return \GuzzleHttp\json_decode($response->getBody(), true);
     }
 }
