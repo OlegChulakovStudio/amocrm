@@ -8,6 +8,7 @@
 
 namespace Chulakov\AmoCRM;
 
+use Chulakov\AmoCRM\Entity\AbstractQueryRequestParams;
 use GuzzleHttp\Client as GuzzleClient;
 
 /**
@@ -45,7 +46,7 @@ class Http implements ClientInterface
      * @param AbstractRequestParams $params параметры запроса
      * @return mixed
      */
-    public function get(string $action, AbstractRequestParams $params)
+    public function get(string $action, AbstractQueryRequestParams $params)
     {
         return \GuzzleHttp\json_decode($this->getGuzzleClient()->get($this->getApiUrl($action, $params))->getBody(), true);
     }
@@ -56,7 +57,7 @@ class Http implements ClientInterface
      * @param array|\Chulakov\AmoCRM\AbstractRequestParams|AbstractRequestParams[] $data данные сущности для сохранения
      * @return mixed
      */
-    public function post(string $action, AbstractRequestParams $params, $data)
+    public function post(string $action, AbstractQueryRequestParams $params, $data)
     {
         return \GuzzleHttp\json_decode($this->getGuzzleClient()->post($this->getApiUrl($action, $params), [
             'json' => $data
@@ -83,7 +84,7 @@ class Http implements ClientInterface
      *
      * @return string
      */
-    protected function getApiUrl($action, AbstractRequestParams $queryParams)
+    protected function getApiUrl($action, AbstractQueryRequestParams $queryParams)
     {
         $baseUrl = strtr($this->urlTemplate, [
             '{subdomain}' => $this->subdomain
