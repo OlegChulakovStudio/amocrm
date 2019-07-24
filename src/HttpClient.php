@@ -58,13 +58,13 @@ class HttpClient implements HttpClientInterface
     /**
      * @inheritdoc
      */
-    public function get(string $action, AbstractQueryRequestParams $params, array $headers = []): array
+    public function get(string $action, AbstractQueryRequestParams $params): array
     {
         $response = $this->getGuzzleClient()
             ->get(
                 $this->getApiUrl($action, $params),
                 [
-                    'headers' => $this->prepareRequestHeaders($headers)
+                    'headers' => $this->prepareRequestHeaders($params->getRequestHeaders())
                 ]
             );
 
@@ -74,13 +74,13 @@ class HttpClient implements HttpClientInterface
     /**
      * @inheritdoc
      */
-    public function post(string $action, AbstractQueryRequestParams $params, $data, array $headers = []): array
+    public function post(string $action, AbstractQueryRequestParams $params, $data): array
     {
         $response = $this->getGuzzleClient()
             ->post(
                 $this->getApiUrl($action, $params), [
                     'json' => $data,
-                    'headers' => $this->prepareRequestHeaders($headers)
+                    'headers' => $this->prepareRequestHeaders($params->getRequestHeaders())
                 ]
             );
 
