@@ -1,6 +1,6 @@
 <?php
 /**
- * Файл класса ClientInterface.php
+ * Файл класса HttpClientInterface.php
  *
  * @copyright Copyright (c) 2019, Oleg Chulakov Studio
  * @link http://chulakov.com/
@@ -14,7 +14,7 @@ use Chulakov\AmoCRM\Entity\AbstractQueryRequestParams;
  * Интерфейс клиента, который осуществялет непосредственное взаимодействие с AmoCRM RESTful API
  * @package Chulakov\AmoCRM
  */
-interface ClientInterface
+interface HttpClientInterface
 {
     /**
      * @param string $action имя действия

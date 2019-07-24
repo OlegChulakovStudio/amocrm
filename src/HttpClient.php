@@ -1,6 +1,6 @@
 <?php
 /**
- * Файл класса Http.php
+ * Файл класса HttpClient.php
  *
  * @copyright Copyright (c) 2019, Oleg Chulakov Studio
  * @link http://chulakov.com/
@@ -15,7 +15,7 @@ use GuzzleHttp\Client as GuzzleClient;
  * Реализация Http-клиента на основе библиотеки Guzzle для взаимодействия с RESTful API AmoCRM
  * @package Chulakov\AmoCRM
  */
-class Http implements ClientInterface
+class HttpClient implements HttpClientInterface
 {
     /**
      * @var string
@@ -31,6 +31,14 @@ class Http implements ClientInterface
      * @var AbstractRequestParams параметры авторизации по HTTP
      */
     protected $authParams;
+
+    /**
+     * @var array заголовки, которые всегда передаются серверу API
+     */
+    protected $defaultHeaders = [
+        'Content-Type' => 'application/json',
+        'Accept' => 'application/json'
+    ];
 
     /**
      * @param \Chulakov\AmoCRM\AbstractRequestParams $authParams
@@ -71,10 +79,6 @@ class Http implements ClientInterface
     protected function getGuzzleClient()
     {
         return new GuzzleClient([
-            'headers' => [
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json'
-            ],
             'verify' => false
         ]);
     }
