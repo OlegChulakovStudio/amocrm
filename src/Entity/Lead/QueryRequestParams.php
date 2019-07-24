@@ -40,4 +40,18 @@ class QueryRequestParams extends AbstractRequestParams
             'loss_reason_name'
         ];
     }
+
+    /**
+     * Задает дополнительное условие отбора,
+     * при котором выбираются только те сделки, которые были изменены после указанной даты
+     * @param \DateTime|null $updatedAfter
+     */
+    public function modifiedAfter(\DateTime $updatedAfter = null)
+    {
+        if ($updatedAfter !== null) {
+            $this->requestHeaders['If-Modified-Since'] = $updatedAfter->format('D, d M Y H:i:s');
+        } else {
+            unset($this->requestHeaders['If-Modified-Since']);
+        }
+    }
 }
