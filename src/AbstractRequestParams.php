@@ -21,6 +21,11 @@ abstract class AbstractRequestParams implements RequestParamsInterface
     protected $params = [];
 
     /**
+     * @var array дополнительные заголовки, которые будут переданы вместе с параметрами
+     */
+    protected $requestHeaders = [];
+
+    /**
      * Магический метод позволяет работать с параметрами, как со свойствами объекта
      * @param string $name
      * @param mixed $value
@@ -49,6 +54,15 @@ abstract class AbstractRequestParams implements RequestParamsInterface
     public function getRequestParams(): array
     {
         return $this->params;
+    }
+
+    /**
+     * Возвращает массив дополнительных заголовком, которые будут переданы вместе с параметрами запроса
+     * @return array
+     */
+    public function getRequestHeaders(): array
+    {
+        return $this->requestHeaders;
     }
 
 }
