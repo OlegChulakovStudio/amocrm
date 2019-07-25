@@ -8,6 +8,8 @@
 
 namespace Chulakov\AmoCRM;
 
+use Chulakov\AmoCRM\Exception\RequestParams\NotAllowedParamException;
+
 /**
  * Абстрактный класс, описывающий магию доступа к параметрам запроса как к свойствам объекта-коллекции параметров
  * @package Chulakov\AmoCRM
@@ -30,12 +32,12 @@ abstract class AbstractRequestParams implements RequestParamsInterface
      * @param string $name
      * @param mixed $value
      * @return AbstractRequestParams
-     * @throws \Exception
+     * @throws NotAllowedParamException
      */
     public function __set($name, $value): AbstractRequestParams
     {
         if (!in_array($name, $this->allowedParams())) {
-            throw new \Exception("Parameter '{$name}' does not exist");
+            throw new NotAllowedParamException("Parameter '{$name}' is not allowed for this request");
         }
 
         if (!is_null($value)) {

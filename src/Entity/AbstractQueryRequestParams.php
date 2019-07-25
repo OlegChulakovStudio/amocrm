@@ -9,6 +9,7 @@
 namespace Chulakov\AmoCRM\Entity;
 
 use Chulakov\AmoCRM\AbstractRequestParams;
+use Chulakov\AmoCRM\Exception\RequestParams\NotAllowedParamException;
 
 /**
  * Добавляет часть логику обработки with-параметров запроса к API
@@ -32,7 +33,7 @@ abstract class AbstractQueryRequestParams extends AbstractRequestParams
     /**
      * @param string $name
      * @return AbstractRequestParams
-     * @throws \Exception
+     * @throws NotAllowedParamException
      */
     public function with(string $name): AbstractRequestParams
     {
@@ -47,7 +48,7 @@ abstract class AbstractQueryRequestParams extends AbstractRequestParams
      * Исключает with-параметр из коллекции
      * @param string $name
      * @return AbstractRequestParams
-     * @throws \Exception
+     * @throws NotAllowedParamException
      */
     public function without(string $name): AbstractRequestParams
     {
@@ -61,12 +62,12 @@ abstract class AbstractQueryRequestParams extends AbstractRequestParams
     /**
      * Проверяет заявлен ли with-параметр в методо @see allowedWithParams()
      * @param string $name
-     * @throws \Exception
+     * @throws NotAllowedParamException
      */
     protected function withParamExists(string $name): void
     {
         if (!in_array($name, $this->allowedWithParams())) {
-            throw new \Exception("With-parameter '{$name}' does not exist");
+            throw new NotAllowedParamException("With-parameter '{$name}' is not allowed for this request");
         }
     }
 
