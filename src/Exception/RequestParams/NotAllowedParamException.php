@@ -16,13 +16,19 @@ use Throwable;
  */
 class NotAllowedParamException extends \Exception
 {
+
     /**
+     * @var string
+     */
+    protected $parameter;
+
+    /**
+     * @param string $parameter наменование невалидного параметра
      * @param string $message
      * @param int $code
      * @param Throwable|null $previous
-     * @param string $parameter наменование невалидного параметра
      */
-    public function __construct(string $message = "", int $code = 0, Throwable $previous = null, string $parameter)
+    public function __construct(string $parameter, string $message = "", int $code = 0, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }

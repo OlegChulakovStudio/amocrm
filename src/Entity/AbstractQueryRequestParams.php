@@ -67,7 +67,7 @@ abstract class AbstractQueryRequestParams extends AbstractRequestParams
     protected function withParamExists(string $name): void
     {
         if (!in_array($name, $this->allowedWithParams())) {
-            throw new NotAllowedParamException("With-parameter '{$name}' is not allowed for this request");
+            throw new NotAllowedParamException($name, "With-parameter '{$name}' is not allowed for this request");
         }
     }
 

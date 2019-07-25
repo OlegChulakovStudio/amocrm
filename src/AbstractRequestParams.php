@@ -37,7 +37,7 @@ abstract class AbstractRequestParams implements RequestParamsInterface
     public function __set($name, $value): AbstractRequestParams
     {
         if (!in_array($name, $this->allowedParams())) {
-            throw new NotAllowedParamException("Parameter '{$name}' is not allowed for this request");
+            throw new NotAllowedParamException($name,"Parameter '{$name}' is not allowed for this request");
         }
 
         if (!is_null($value)) {
