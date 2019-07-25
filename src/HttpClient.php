@@ -9,6 +9,7 @@
 namespace Chulakov\AmoCRM;
 
 use Chulakov\AmoCRM\Entity\AbstractQueryRequestParams;
+use Chulakov\AmoCRM\Exception\Http\ResponseExceptionFactory;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Psr7\Response;
 
@@ -57,33 +58,52 @@ class HttpClient implements HttpClientInterface
     }
 
     /**
-     * @inheritdoc
+     * @param string $action
+     * @param AbstractQueryRequestParams $params
+     * @return array
+     * @throws Exception\Http\ResponseException
      */
     public function get(string $action, AbstractQueryRequestParams $params): array
     {
-        $response = $this->getGuzzleClient()
-            ->get(
-                $this->getApiUrl($action, $params),
-                [
-                    'headers' => $this->prepareRequestHeaders($params->getRequestHeaders())
-                ]
-            );
+        try {
+
+            $response = $this->getGuzzleClient()
+                ->get(
+                    $this->getApiUrl($action, $params),
+                    [
+                        'headers' => $this->prepareRequestHeaders($params->getRequestHeaders())
+                    ]
+                );
+
+        } catch (\GuzzleHttp\Exception\ClientException $exception) {
+            $factory = new ResponseExceptionFactory($exception);
+            $factory->throwException();
+        }
 
         return $this->decodeResponse($response);
     }
 
     /**
-     * @inheritdoc
+     * @param string $action
+     * @param AbstractQueryRequestParams $params
+     * @param AbstractRequestParams|AbstractRequestParams[] $data
+     * @return array
+     * @throws Exception\Http\ResponseException
      */
     public function post(string $action, AbstractQueryRequestParams $params, $data): array
     {
-        $response = $this->getGuzzleClient()
-            ->post(
-                $this->getApiUrl($action, $params), [
-                    'json' => $data,
-                    'headers' => $this->prepareRequestHeaders($params->getRequestHeaders())
-                ]
-            );
+        try {
+            $response = $this->getGuzzleClient()
+                ->post(
+                    $this->getApiUrl($action, $params), [
+                        'json' => $data,
+                        'headers' => $this->prepareRequestHeaders($params->getRequestHeaders())
+                    ]
+                );
+        } catch (\GuzzleHttp\Exception\ClientException $exception) {
+            $factory = new ResponseExceptionFactory($exception);
+            $factory->throwException();
+        }
 
         return $this->decodeResponse($response);
     }
