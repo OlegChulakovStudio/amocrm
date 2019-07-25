@@ -32,4 +32,13 @@ class NotAllowedParamException extends \Exception
     {
         parent::__construct($message, $code, $previous);
     }
+
+    /**
+     * Возвращает имя запрещенного/ошибочно указанного параметра
+     * @return string
+     */
+    public function getParamName()
+    {
+        return $this->parameter;
+    }
 }
