@@ -47,7 +47,8 @@ class HttpClient implements HttpClientInterface
     ];
 
     /**
-     * @param \Chulakov\AmoCRM\AbstractRequestParams $authParams
+     * @param string $subdomain
+     * @param AbstractRequestParams $authParams
      */
     public function __construct(string $subdomain, AbstractRequestParams $authParams)
     {
