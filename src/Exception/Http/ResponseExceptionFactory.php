@@ -13,32 +13,15 @@ use GuzzleHttp\Exception\ClientException;
 class ResponseExceptionFactory
 {
 
+    /**
+     * @var string HTTP-код исключения
+     */
     protected $httpCode;
 
-    protected $code;
-
-    protected $message;
-
-    protected $domain;
-
-    protected $serverTime;
-
     /**
-     * @var ResponseException
+     * @var array массив на основе JSON-строки тела HTTP-ответа Guzzle-исключения
      */
-    protected $exception;
-
-    /**
-     * @var array
-     */
-    protected $classes = [
-        '401-110' => AuthResponseException::class,
-        '401-111' => AuthResponseException::class,
-        '401-112' => AuthResponseException::class,
-        '403-113' => AuthResponseException::class,
-        '401-101' => AuthResponseException::class,
-        '401-401' => AuthResponseException::class,
-    ];
+    protected $content;
 
     /**
      * Собирает необходимую информацию для сборки исключения
@@ -46,41 +29,44 @@ class ResponseExceptionFactory
      */
     public function __construct(ClientException $exception)
     {
-        $response = \GuzzleHttp\json_decode($exception->getResponse()->getBody()->getContents(), true);
-
         $this->httpCode = $exception->getCode();
-        $this->code = $response['error_code'];
-        $this->message = $response['error'];
-        $this->ip = $response['ip'];
-        $this->domain = $response['domain'];
-        $this->serverTime = $response['server_time'];
+        if ($json = trim($exception->getResponse()->getBody()->getContents())) {
+            $this->content = \GuzzleHttp\json_decode($json, true);
+        } else {
+            $this->content = [];
+        }
     }
 
     /**
-     * Производит сборку исключения
-     */
-    protected function buildException(): void
-    {
-        $exceptionClass =
-            key_exists($this->httpCode . '-' . $this->code, $this->classes)
-                ? $this->classes["{$this->httpCode}-{$this->code}"] : ResponseException::class;
-
-
-        $this->exception = new $exceptionClass($this->httpCode, $this->message, $this->code);
-
-        $this->exception->setDomain($this->domain);
-        $this->exception->setIp($this->ip);
-        $this->exception->setIp($this->ip);
-    }
-
-    /**
-     * Побуждает исключение
+     * Производит сборку исключения и запуск исключения
+     * @throws AuthResponseException
      * @throws ResponseException
      */
-    public function throwException()
+    public function throwException(): void
     {
-        $this->buildException();
+        if (isset($this->content['response'])) {
 
-        throw $this->exception;
+            $response = $this->content['response'];
+            // AuthResponseException
+            if (isset($response['error_code'])) {
+                $exception = new AuthResponseException($this->httpCode, $response['error'], $response['error_code']);
+                $exception->setDomain($response['domain']);
+                $exception->setIp($response['ip']);
+                $exception->setServerTime($response['server_time']);
+            } else {
+                $exception = new ResponseException($this->httpCode, "Error description json: " . \GuzzleHttp\json_encode($response));
+            }
+
+        } elseif (isset($this->content['title']) && $this->content['title'] == 'Error') {
+
+            $exception = new ResponseException($this->httpCode, $this->content['detail'], $this->content['status']);
+
+        } else {
+
+            $exception = new ResponseException($this->httpCode, "Unknown error with empty description");
+
+        }
+
+        throw $exception;
     }
 }
