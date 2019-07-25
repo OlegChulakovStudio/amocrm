@@ -131,8 +131,8 @@ class HttpClient implements HttpClientInterface
     protected function getApiUrl($action, AbstractQueryRequestParams $queryParams)
     {
         $baseUrl = strtr($this->urlTemplate, [
-            '{subdomain}' => $this->subdomain
-        ]) . $action;
+                '{subdomain}' => $this->subdomain
+            ]) . $action;
 
 
         $params = array_merge($this->authParams->getRequestParams(), $queryParams->getRequestParams());
@@ -159,8 +159,13 @@ class HttpClient implements HttpClientInterface
      * @param Response $response
      * @return mixed
      */
-    protected function decodeResponse(Response $response)
+    protected function decodeResponse(Response $response):array
     {
-        return \GuzzleHttp\json_decode($response->getBody(), true);
+        $jsonContent = $response->getBody()->getContents();
+
+        if ($jsonContent) {
+            return \GuzzleHttp\json_decode($jsonContent, true);
+        }
+        return [];
     }
 }
