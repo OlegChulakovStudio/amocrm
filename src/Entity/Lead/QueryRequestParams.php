@@ -7,14 +7,13 @@
 
 namespace Chulakov\AmoCRM\Entity\Lead;
 
-use Chulakov\AmoCRM\AbstractRequestParams;
-
+use Chulakov\AmoCRM\Entity\AbstractQueryRequestParams;
 /**
  * Описывает допустимые параметры запроса для сущности "Сделка"
  * @package Chulakov\AmoCRM\Entity\Lead
  * @see https://www.amocrm.ru/developers/content/api/leads
  */
-class QueryRequestParams extends AbstractRequestParams
+class QueryRequestParams extends AbstractQueryRequestParams
 {
 
     /**
