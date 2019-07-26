@@ -11,6 +11,7 @@ namespace Chulakov\AmoCRM\Entity\Lead;
 use Chulakov\AmoCRM\HttpClientInterface;
 use Chulakov\AmoCRM\Entity\AbstractApi;
 use Chulakov\AmoCRM\Entity\AbstractQueryRequestParams;
+use Chulakov\AmoCRM\RequestParamsPool;
 
 /**
  * Реализация методов RESTful API для сущности Сделки
@@ -43,6 +44,16 @@ class Api extends AbstractApi
     public function items(AbstractQueryRequestParams $params): array
     {
         return $this->client->get(self::ACTION_NAME, $params);
+    }
+
+    /**
+     * Добавляет новую сделку
+     * @param RequestParamsPool $data
+     * @return array
+     */
+    public function add(RequestParamsPool $data): array
+    {
+        return $this->client->post(self::ACTION_NAME, $data);
     }
 
 }
