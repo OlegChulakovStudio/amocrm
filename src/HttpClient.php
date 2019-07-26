@@ -135,7 +135,7 @@ class HttpClient implements HttpClientInterface
             ]) . $action;
 
 
-        $params = is_null($queryParams)
+        $params = !is_null($queryParams)
             ? array_merge($this->authParams->getRequestParams(), $queryParams->getRequestParams())
             : $this->authParams->getRequestParams();
 
