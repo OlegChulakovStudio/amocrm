@@ -14,18 +14,13 @@ use Chulakov\AmoCRM\Exception\RequestParams\NotAllowedParamException;
  * Абстрактный класс, описывающий магию доступа к параметрам запроса как к свойствам объекта-коллекции параметров
  * @package Chulakov\AmoCRM
  */
-abstract class AbstractRequestParams implements RequestParamsInterface
+abstract class AbstractRequestParams implements ParamsInterface
 {
 
     /**
      * @var array
      */
     protected $params = [];
-
-    /**
-     * @var array дополнительные заголовки, которые будут переданы вместе с параметрами
-     */
-    protected $requestHeaders = [];
 
     /**
      * Магический метод позволяет работать с параметрами, как со свойствами объекта
@@ -56,15 +51,6 @@ abstract class AbstractRequestParams implements RequestParamsInterface
     public function getRequestParams(): array
     {
         return $this->params;
-    }
-
-    /**
-     * Возвращает массив дополнительных заголовком, которые будут переданы вместе с параметрами запроса
-     * @return array
-     */
-    public function getRequestHeaders(): array
-    {
-        return $this->requestHeaders;
     }
 
 }

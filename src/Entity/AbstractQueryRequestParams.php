@@ -20,6 +20,11 @@ abstract class AbstractQueryRequestParams extends AbstractRequestParams
 {
 
     /**
+     * @var array дополнительные заголовки, которые будут переданы вместе с параметрами
+     */
+    protected $requestHeaders = [];
+
+    /**
      * @var array
      */
     protected $with = [];
@@ -85,5 +90,14 @@ abstract class AbstractQueryRequestParams extends AbstractRequestParams
         }
 
         return $parent;
+    }
+
+    /**
+     * Возвращает массив дополнительных заголовком, которые будут переданы вместе с параметрами запроса
+     * @return array
+     */
+    public function getRequestHeaders(): array
+    {
+        return $this->requestHeaders;
     }
 }

@@ -8,6 +8,7 @@
 namespace Chulakov\AmoCRM\Entity\Lead;
 
 use Chulakov\AmoCRM\Entity\AbstractQueryRequestParams;
+
 /**
  * Описывает допустимые параметры запроса для сущности "Сделка"
  * @package Chulakov\AmoCRM\Entity\Lead
@@ -15,6 +16,7 @@ use Chulakov\AmoCRM\Entity\AbstractQueryRequestParams;
  */
 class QueryRequestParams extends AbstractQueryRequestParams
 {
+
 
     /**
      * @inheritdoc
@@ -53,4 +55,5 @@ class QueryRequestParams extends AbstractQueryRequestParams
             unset($this->requestHeaders['If-Modified-Since']);
         }
     }
+
 }

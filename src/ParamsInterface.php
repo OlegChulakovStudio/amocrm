@@ -1,6 +1,6 @@
 <?php
 /**
- * Файл класса RequestParamsInterface.php
+ * Файл класса ParamsInterface.php
  *
  * @copyright Copyright (c) 2019, Oleg Chulakov Studio
  * @link http://chulakov.com/
@@ -12,7 +12,7 @@ namespace Chulakov\AmoCRM;
  * Интерфейс описывает методы задания и получения пареметров запроса к API
  * @package Chulakov\AmoCRM
  */
-interface RequestParamsInterface
+interface ParamsInterface
 {
     /**
      * Метод возвращает перечень допустимых к использованию памаметрв запорса
