@@ -1,6 +1,6 @@
 <?php
 /**
- * Файл класса AbstractRequestParamsPool.php
+ * Файл класса RequestParamsPool.php
  *
  * @copyright Copyright (c) 2019, Oleg Chulakov Studio
  * @link http://chulakov.com/
@@ -12,7 +12,7 @@ namespace Chulakov\AmoCRM;
  * Реализует логику пула параметров запроса
  * @package Chulakov\AmoCRM
  */
-abstract class AbstractRequestParamsPool
+class RequestParamsPool
 {
 
     /**
@@ -37,7 +37,7 @@ abstract class AbstractRequestParamsPool
 
     /**
      * Удаляет объект араметров из пула
-     * @param ParamsInterface $params
+     * @param AbstractRequestParams $params
      */
     public function remove(AbstractRequestParams $params): void
     {
@@ -47,10 +47,10 @@ abstract class AbstractRequestParamsPool
 
     /**
      * Вычисляет значение хеша для указанного объекта
-     * @param ParamsInterface $params
+     * @param AbstractRequestParams $params
      * @return string
      */
-    protected function getHash(ParamsInterface $params): string
+    protected function getHash(AbstractRequestParams $params): string
     {
        return md5(serialize($params));
     }

@@ -26,10 +26,9 @@ interface HttpClientInterface
 
     /**
      * Производит POST-запрос к RESTful API
-     * @param string $action имя действия
-     * @param AbstractQueryRequestParams $params параметры запроса
-     * @param AbstractRequestParams[] | AbstractRequestParams $data данные сущности для сохранения
+     * @param string $action
+     * @param RequestParamsPool $data пул параметров запроса, которые необходимы для добавления или изменения данных
      * @return array
      */
-    public function post(string $action, AbstractQueryRequestParams $params, $data): array;
+    public function post(string $action, RequestParamsPool $data): array;
 }

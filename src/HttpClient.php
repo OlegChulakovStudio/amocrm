@@ -85,19 +85,19 @@ class HttpClient implements HttpClientInterface
 
     /**
      * @param string $action
-     * @param AbstractQueryRequestParams $params
-     * @param AbstractRequestParams|AbstractRequestParams[] $data
+     * @param RequestParamsPool $data
      * @return array
+     * @throws Exception\Http\AuthResponseException
      * @throws Exception\Http\ResponseException
      */
-    public function post(string $action, AbstractQueryRequestParams $params, $data): array
+    public function post(string $action, RequestParamsPool $data): array
     {
         try {
             $response = $this->getGuzzleClient()
                 ->post(
-                    $this->getApiUrl($action, $params), [
-                        'json' => $data,
-                        'headers' => $this->prepareRequestHeaders($params->getRequestHeaders())
+                    $this->getApiUrl($action, null), [
+                        'json' => $data->getRequestParams(),
+                        'headers' => $this->prepareRequestHeaders([])
                     ]
                 );
         } catch (\GuzzleHttp\Exception\ClientException $exception) {
@@ -128,14 +128,16 @@ class HttpClient implements HttpClientInterface
      *
      * @return string
      */
-    protected function getApiUrl($action, AbstractQueryRequestParams $queryParams)
+    protected function getApiUrl($action, AbstractQueryRequestParams $queryParams = null)
     {
         $baseUrl = strtr($this->urlTemplate, [
                 '{subdomain}' => $this->subdomain
             ]) . $action;
 
 
-        $params = array_merge($this->authParams->getRequestParams(), $queryParams->getRequestParams());
+        $params = is_null($queryParams)
+            ? array_merge($this->authParams->getRequestParams(), $queryParams->getRequestParams())
+            : $this->authParams->getRequestParams();
 
         if (!empty($params)) {
             return  $baseUrl . '?' . http_build_query($params);
